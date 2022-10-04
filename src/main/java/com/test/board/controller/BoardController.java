@@ -37,6 +37,13 @@ public class BoardController {
         return "boardlist";
     }
 
+    @GetMapping("/board/view")
+    public String boardView(Model model, Integer id){
+
+        model.addAttribute("board",boardService.boardView(id));
+        return "boardView";
+    }
+
     @GetMapping("test-api")
     @ResponseBody // 바디 부분에 내가 직접 넣어 주겠다.
     public TestName test(@RequestParam("name") String name) {
