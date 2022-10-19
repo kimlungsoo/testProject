@@ -3,6 +3,9 @@ package com.test.board.controller;
 import com.test.board.entity.Board;
 import com.test.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,9 +34,18 @@ public class BoardController {
     }
 
     @GetMapping("/board/list")
-    public String boardList(Model model) {
+    public String boardList(Model model, @PageableDefault(page = 0, size = 3, sort = "id") Pageable pageable) {
 
-        model.addAttribute("list",boardService.boardList());
+        Page<Board> list = boardService.boardList(pageable);
+
+        int nowPage = list.getPageable().getPageNumber()+1;
+        int startPage = Math.max(nowPage-4,1);
+        int endPage = Math.min(nowPage +5 , list.getTotalPages());
+        model.addAttribute("list",boardService.boardList(pageable));
+        model.addAttribute("nowPage",nowPage);
+        model.addAttribute("startPage",startPage);
+        model.addAttribute("endPage",endPage);
+
         return "boardlist";
     }
 
